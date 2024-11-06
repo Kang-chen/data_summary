@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Single-Cell Data Collection Summary</title>
+    
+    <!-- Include Highcharts core library -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <!-- Include Highcharts modules -->
+    <script src="https://code.highcharts.com/modules/treemap.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    
+    <!-- Styling -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .chart-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 50px auto;
+        }
+        .chart-title {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+        .box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 3px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+        }
+        .box::before {
+            content: '';
+            position: absolute;
+            top: -3px; right: -3px; bottom: -3px; left: -3px;
+            background: linear-gradient(45deg, #e0e0e0, #f5f5f5, #ffffff);
+            border-radius: 11px;
+            z-index: -1;
+        }
+        .box h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .box ul {
+            list-style: none;
+            padding: 0;
+        }
+        .box ul li {
+            margin-bottom: 8px;
+        }
+        
+        .summary-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px auto;
+            max-width: 1200px;
+        }
+        .stat-box {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .stat-value {
+            display: block;
+            font-size: 2em;
+            font-weight: bold;
+            color: #303F9F;
+        }
+        .stat-label {
+            display: block;
+            font-size: 1em;
+            color: #616161;
+            margin-top: 5px;
+        }
+        .disease-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .disease-name {
+            font-weight: bold;
+        }
+        .disease-stats {
+            display: flex;
+            gap: 10px;
+        }
+        .stat {
+            background-color: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Single-Cell Data Collection Summary</h1>
+
+<!-- Summary Statistics Section -->
+<div class="summary-stats">
+    <div class="stat-box">
+        <span class="stat-value">842</span>
+        <span class="stat-label">Total Studies</span>
+    </div>
+    <div class="stat-box">
+        <span class="stat-value">3,911</span>
+        <span class="stat-label">Total Donors</span>
+    </div>
+    <div class="stat-box">
+        <span class="stat-value">50,961,200</span>
+        <span class="stat-label">Total Cells</span>
+    </div>
+    <div class="stat-box">
+        <span class="stat-value">700</span>
+        <span class="stat-label">Total Cell Types</span>
+    </div>
+</div>
+
+<!-- Organ Data Visualization Section -->
+<div class="chart-container">
+    <div class="chart-title">Cell Count Proportion by Organ (Pie Chart)</div>
+    <div id="pie-chart" style="width: 100%; height: 600px;"></div>
+</div>
+
+<div class="chart-container">
+    <div class="chart-title">Study Count by Organ (Column Chart)</div>
+    <div id="column-chart" style="width: 100%; height: 600px;"></div>
+</div>
+
+<div class="chart-container">
+    <div class="chart-title">Treemap of Cell Count and Donor Numbers by Organ</div>
+    <div id="treemap-chart" style="width: 100%; height: 600px;"></div>
+</div>
+<!-- Disease Classification Section -->
+<h1>Disease Classification Overview</h1>
+<p>This table shows the categorized diseases based on studies, donors, and cells involved in research.</p>
+
+<div class="container">
+    <div class="box">
+        <h2>Autoimmune and Inflammatory Diseases</h2>
+        <ul>
+            <li class="disease-info">
+                <span class="disease-name">Crohn disease</span>
+                <div class="disease-stats">
+                    <span class="stat">305,936 cells</span>
+                    <span class="stat">7 studies</span>
+                    <span class="stat">53 donors</span>
+                </div>
+            </li>
+            <li class="disease-info">
+                <span class="disease-name">Crohn ileitis</span>
+                <div class="disease-stats">
+                    <span class="stat">29,877 cells</span>
+                    <span class="stat">1 study</span>
+                    <span class="stat">11 donors</span>
+                </div>
+            </li>
+            <li class="disease-info">
+                <span class="disease-name">Periodontitis</span>
+                <div class="disease-stats">
+                    <span class="stat">35,235 cells</span>
+                    <span class="stat">1 study</span>
+                    <span class="stat">10 donors</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="box">
+        <h2>Cancer and Neoplasms</h2>
+        <ul>
+            <li class="disease-info">
+                <span class="disease-name">Lung adenocarcinoma</span>
+                <div class="disease-stats">
+                    <span class="stat">623,135 cells</span>
+                    <span class="stat">8 studies</span>
+                    <span class="stat">201 donors</span>
+                </div>
+            </li>
+            <li class="disease-info">
+                <span class="disease-name">Glioblastoma</span>
+                <div class="disease-stats">
+                    <span class="stat">313,201 cells</span>
+                    <span class="stat">2 studies</span>
+                    <span class="stat">110 donors</span>
+                </div>
+            </li>
+            <li class="disease-info">
+                <span class="disease-name">B-cell non-Hodgkin lymphoma</span>
+                <div class="disease-stats">
+                    <span class="stat">938,543 cells</span>
+                    <span class="stat">5 studies</span>
+                    <span class="stat">76 donors</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="box">
+        <h2>Cardiovascular Diseases</h2>
+        <ul>
+            <li class="disease-info">
+                <span class="disease-name">Dilated cardiomyopathy</span>
+                <div class="disease-stats">
+                    <span class="stat">802,512 cells</span>
+                    <span class="stat">6 studies</span>
+                    <span class="stat">52 donors</span>
+                </div>
+            </li>
+            <li class="disease-info">
+                <span class="disease-name">Myocardial infarction</span>
+                <div class="disease-stats">
+                    <span class="stat">246,859 cells</span>
+                    <span class="stat">25 studies</span>
+                    <span class="stat">19 donors</span>
+                </div>
+            </li>
+            <li class="disease-info">
+                <span class="disease-name">Chronic obstructive pulmonary disease</span>
+                <div class="disease-stats">
+                    <span class="stat">55,254 cells</span>
+                    <span class="stat">1 study</span>
+                    <span class="stat">18 donors</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="box">
+        <h2>Infectious Diseases</h2>
+        <ul>
+            <li class="disease-info">
+                <span class="disease-name">COVID-19</span>
+                <div class="disease-stats">
+                    <span class="stat">3,245,177 cells</span>
+                    <span class="stat">59 studies</span>
+                    <span class="stat">453 donors</span>
+                </div>
+            </li>
+            <li class="disease-info">
+                <span class="disease-name">Post-COVID-19 disorder</span>
+                <div class="disease-stats">
+                    <span class="stat">96,940 cells</span>
+                    <span class="stat">1 study</span>
+                    <span class="stat">20 donors</span>
+                </div>
+            </li>
+            <li class="disease-info">
+                <span class="disease-name">Influenza</span>
+                <div class="disease-stats">
+                    <span class="stat">30,742 cells</span>
+                    <span class="stat">3 studies</span>
+                    <span class="stat">18 donors</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="box">
+        <h2>Metabolic Disorders</h2>
+        <ul>
+            <li class="disease-info">
+                <span class="disease-name">Chronic kidney disease</span>
+                <div class="disease-stats">
+                    <span class="stat">209,391 cells</span>
+                    <span class="stat">3 studies</span>
+                    <span class="stat">44 donors</span>
+                </div>
+            </li>
+            <li class="disease-info">
+                <span class="disease-name">Acute kidney failure</span>
+                <div class="disease-stats">
+                    <span class="stat">124,652 cells</span>
+                    <span class="stat">3 studies</span>
+                    <span class="stat">23 donors</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="box">
+        <h2>Neurological Disorders</h2>
+        <ul>
+            <li class="disease-info">
+                <span class="disease-name">Dementia</span>
+                <div class="disease-stats">
+                    <span class="stat">864,632 cells</span>
+                    <span class="stat">45 studies</span>
+                    <span class="stat">42 donors</span>
+                </div>
+            </li>
+            <li class="disease-info">
+                <span class="disease-name">Epilepsy</span>
+                <div class="disease-stats">
+                    <span class="stat">130,019 cells</span>
+                    <span class="stat">2 studies</span>
+                    <span class="stat">52 donors</span>
+                </div>
+            </li>
+            <li class="disease-info">
+                <span class="disease-name">Alzheimer disease</span>
+                <div class="disease-stats">
+                    <span class="stat">236,490 cells</span>
+                    <span class="stat">15 studies</span>
+                    <span class="stat">32 donors</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="box">
+        <h2>Other</h2>
+        <ul>
+            <li class="disease-info">
+                <span class="disease-name">Respiratory system disorder</span>
+                <div class="disease-stats">
+                    <span class="stat">89,257 cells</span>
+                    <span class="stat">2 studies</span>
+                    <span class="stat">20 donors</span>
+                </div>
+            </li>
+            <li class="disease-info">
+                <span class="disease-name">Digestive system disorder</span>
+                <div class="disease-stats">
+                    <span class="stat">79,714 cells</span>
+                    <span class="stat">1 study</span>
+                    <span class="stat">13 donors</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    		
+
+
+    <!-- Normal Section -->
+    <div class="box">
+        <h2>Normal</h2>
+        <ul>
+            <li class="disease-info">
+                <span class="disease-name">Healthy Samples</span>
+                <div class="disease-stats">
+                    <span class="stat">38,930,880 cells</span>
+                    <span class="stat">733 studies</span>
+                    <span class="stat">2,245 donors</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+<!-- Highcharts script -->
+<script>
+    // Set custom color scheme
+    Highcharts.setOptions({
+        colors: ['#00796B', '#C2185B', '#7B1FA2', '#303F9F', '#0288D1', '#388E3C', '#FBC02D', '#E64A19', '#5D4037', '#616161', '#1976D2', '#F57C00']
+    });
+
+    // Create a color mapping based on organ names
+    const colorPalette = Highcharts.getOptions().colors;
+    const organColorMap = {};
+    let colorIndex = 0;
+
+    // Data preparation
+    const data = [
+        { organ: 'brain', studies: 1198, donors: 1296, cells: 20080717 },
+        { organ: 'Blood', studies: 65, donors: 730, cells: 6718479 },
+        { organ: 'Respiratory System', studies: 151, donors: 759, cells: 4080094 },
+        { organ: 'heart', studies: 161, donors: 281, cells: 3482594 },
+        { organ: 'breast', studies: 28, donors: 230, cells: 2193356 },
+        { organ: 'kidney', studies: 104, donors: 263, cells: 2011971 },
+        { organ: 'large intestine', studies: 211, donors: 412, cells: 1458690 },
+        { organ: 'skin of body', studies: 80, donors: 302, cells: 1124653 },
+        { organ: 'liver', studies: 37, donors: 65, cells: 954345 },
+        { organ: 'thymus', studies: 22, donors: 37, cells: 825097 },
+        { organ: 'vasculature', studies: 85, donors: 165, cells: 784631 },
+        { organ: 'lymph node', studies: 48, donors: 102, cells: 776651 },
+        { organ: 'spleen', studies: 19, donors: 35, cells: 645571 },
+        { organ: 'Bone marrow', studies: 30, donors: 127, cells: 600573 },
+        { organ: 'gonad', studies: 5, donors: 52, cells: 522867 },
+        { organ: 'breast (organoid)', studies: 2, donors: 51, cells: 383768 },
+        { organ: 'mammary gland epithelial cell (cell culture)', studies: 1, donors: 1, cells: 291930 },
+        { organ: 'placenta', studies: 5, donors: 42, cells: 271779 },
+        { organ: 'body of stomach', studies: 9, donors: 51, cells: 270133 },
+        { organ: 'caudate lobe of liver', studies: 16, donors: 37, cells: 263707 },
+        { organ: 'decidua basalis', studies: 9, donors: 6, cells: 204208 },
+        { organ: 'decidua', studies: 3, donors: 33, cells: 178390 },
+        { organ: 'transition zone of prostate', studies: 10, donors: 10, cells: 172878 },
+        { organ: 'subcutaneous adipose tissue', studies: 8, donors: 24, cells: 152155 },
+        { organ: 'nasal cavity', studies: 1, donors: 70, cells: 146344 },
+        { organ: 'cultured cell (cell culture)', studies: 1, donors: 1, cells: 146270 },
+        { organ: 'omental fat pad', studies: 5, donors: 10, cells: 145215 },
+        { organ: 'yolk sac', studies: 7, donors: 5, cells: 115568 },
+        { organ: 'gingiva', studies: 1, donors: 34, cells: 99893 },
+        { organ: 'tonsil', studies: 6, donors: 8, cells: 99090 },
+        { organ: 'fimbria of uterine tube', studies: 7, donors: 9, cells: 94461 },
+        { organ: 'islet of Langerhans', studies: 5, donors: 15, cells: 86813 },
+        { organ: 'isthmus of fallopian tube', studies: 7, donors: 9, cells: 77499 },
+        { organ: 'peripheral zone of prostate', studies: 10, donors: 3, cells: 74893 },
+        { organ: 'ampulla of uterine tube', studies: 7, donors: 9, cells: 74888 },
+        { organ: 'ovary', studies: 4, donors: 13, cells: 71070 },
+        { organ: 'bladder organ', studies: 7, donors: 6, cells: 68665 },
+        { organ: 'prostate gland', studies: 8, donors: 7, cells: 67691 },
+        { organ: 'iris', studies: 2, donors: 6, cells: 63771 },
+        { organ: 'parotid gland', studies: 6, donors: 2, cells: 58822 },
+        { organ: 'adipose tissue', studies: 7, donors: 3, cells: 58710 },
+        { organ: 'adrenal gland', studies: 10, donors: 8, cells: 58425 },
+        { organ: 'uterus (organoid)', studies: 1, donors: 3, cells: 52146 },
+        { organ: 'cornea', studies: 7, donors: 6, cells: 49615 },
+        { organ: 'cardia of stomach', studies: 8, donors: 15, cells: 45187 },
+        { organ: 'muscle of pelvic diaphragm', studies: 5, donors: 4, cells: 44165 },
+        { organ: 'visceral abdominal adipose tissue', studies: 1, donors: 12, cells: 43188 },
+        { organ: 'ciliary body', studies: 2, donors: 4, cells: 41644 },
+        { organ: 'corneo-scleral junction', studies: 2, donors: 4, cells: 41152 },
+        { organ: 'fallopian tube', studies: 6, donors: 4, cells: 40308 },
+        { organ: 'eye trabecular meshwork', studies: 2, donors: 4, cells: 34784 },
+        { organ: 'upper outer quadrant of breast', studies: 1, donors: 7, cells: 31584 },
+        { organ: 'subcutaneous abdominal adipose tissue', studies: 1, donors: 10, cells: 29147 },
+        { organ: 'pancreas', studies: 2, donors: 8, cells: 28768 },
+        { organ: 'exocrine pancreas', studies: 6, donors: 2, cells: 27850 },
+        { organ: 'muscle organ', studies: 1, donors: 2, cells: 25999 },
+        { organ: 'mucosa', studies: 1, donors: 3, cells: 25415 },
+        { organ: 'preadipocyte (cell culture)', studies: 1, donors: 1, cells: 24350 },
+        { organ: 'rectus abdominis muscle', studies: 4, donors: 2, cells: 23182 },
+        { organ: 'endometrium', studies: 7, donors: 16, cells: 22926 },
+        { organ: 'trophoblast (organoid)', studies: 1, donors: 6, cells: 22660 },
+        { organ: 'mammary gland', studies: 5, donors: 1, cells: 21788 },
+        { organ: 'nasopharynx', studies: 1, donors: 58, cells: 21152 },
+        { organ: 'anterior part of tongue', studies: 6, donors: 3, cells: 19838 },
+        { organ: 'lens of camera-type eye', studies: 1, donors: 3, cells: 13899 },
+        { organ: 'omentum', studies: 5, donors: 7, cells: 13874 },
+        { organ: 'sublingual gland', studies: 6, donors: 1, cells: 13243 },
+        { organ: 'testis', studies: 1, donors: 2, cells: 13211 },
+        { organ: 'thyroid gland', studies: 1, donors: 2, cells: 12580 },
+        { organ: 'muscle of abdomen', studies: 4, donors: 1, cells: 11950 },
+        { organ: 'posterior part of tongue', studies: 5, donors: 2, cells: 11896 },
+        { organ: 'adrenal tissue', studies: 2, donors: 5, cells: 11404 },
+        { organ: 'tendon of semitendinosus', studies: 1, donors: 4, cells: 10533 },
+        { organ: 'chorionic villus', studies: 1, donors: 1, cells: 9898 },
+        { organ: 'gallbladder', studies: 1, donors: 1, cells: 9769 },
+        { organ: 'uterine cervix', studies: 1, donors: 1, cells: 8096 },
+        { organ: 'brown preadipocyte (cell culture)', studies: 1, donors: 1, cells: 7297 },
+        { organ: 'eye', studies: 6, donors: 3, cells: 6495 },
+        { organ: 'myometrium', studies: 5, donors: 1, cells: 6020 },
+        { organ: 'trophoblast cell (cell culture)', studies: 1, donors: 1, cells: 5905 },
+        { organ: 'vault of skull', studies: 1, donors: 1, cells: 5129 },
+        { organ: 'conjunctiva', studies: 2, donors: 1, cells: 3584 },
+        { organ: 'sclera', studies: 5, donors: 1, cells: 2502 },
+        { organ: 'pigment epithelium of eye', studies: 1, donors: 3, cells: 2348 },
+        { organ: 'perirenal fat', studies: 1, donors: 4, cells: 1916 },
+        { organ: 'endocrine pancreas', studies: 5, donors: 1, cells: 1778 },
+        { organ: 'embryonic stem cell', studies: 1, donors: 1, cells: 1660 },
+        { organ: 'skeletal muscle tissue', studies: 4, donors: 5, cells: 1610 },
+        { organ: 'lacrimal gland', studies: 5, donors: 1, cells: 238 },
+        { organ: 'tongue', studies: 4, donors: 1, cells: 192 }
+    ];
+    // Assign colors to each organ
+    data.forEach(item => {
+            if (!organColorMap[item.organ]) {
+                organColorMap[item.organ] = colorPalette[colorIndex % colorPalette.length];
+                colorIndex++;
+            }
+        });
+        
+    // Pie Chart
+    (function() {
+        const pieData = data.map(item => ({
+            name: item.organ,
+            y: item.cells
+        }));
+
+        // Sort data in descending order
+        pieData.sort((a, b) => b.y - a.y);
+
+        Highcharts.chart('pie-chart', {
+            chart: {
+                type: 'pie'
+            },
+            title: {
+                text: null // Title is already displayed in the page
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b><br/>Cell Count: <b>{point.y}</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                        filter: {
+                            property: 'percentage',
+                            operator: '>',
+                            value: 1
+                        }
+                    }
+                }
+            },
+            series: [{
+                name: 'Proportion',
+                colorByPoint: true,
+                data: pieData
+            }]
+        });
+    })();
+    (function() {
+    // 处理并排序数据
+    const processedData = data.map(item => ({
+        name: item.organ,
+        y: item.studies,
+        donors: item.donors
+    })).sort((a, b) => b.y - a.y);
+
+    // 分离大于10的项和其余项
+    const filteredData = [];
+    let otherY = 0;
+    let otherDonors = 0;
+
+    processedData.forEach(item => {
+        if (item.y > 10) {
+            filteredData.push(item);
+        } else {
+            otherY += item.y;
+            otherDonors += item.donors;
+        }
+    });
+
+    // 如果有合并的“Other”项，添加到数据中
+    if (otherY > 0) {
+        filteredData.push({
+            name: 'Other',
+            y: otherY,
+            donors: otherDonors
+        });
+    }
+
+    Highcharts.chart('column-chart', {
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: null
+        },
+        xAxis: {
+            type: 'category',
+            title: {
+                text: 'Organ'
+            }
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Number of Studies'
+            },
+            allowDecimals: false
+        },
+        legend: {
+            enabled: false
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><br/>',
+            pointFormat: '<span style="color:{point.color}">●</span> Study Count: <b>{point.y}</b><br/>Donor Count: <b>{point.donors}</b>'
+        },
+        plotOptions: {
+            column: {
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.y}',
+                    style: {
+                        color: '#000000',
+                        textOutline: 'none'
+                    }
+                },
+                borderWidth: 0
+            }
+        },
+        series: [{
+            name: 'Studies',
+            data: filteredData,
+            colorByPoint: true
+        }]
+    });
+})();
+    // Treemap with matching colors
+    (function() {
+        // 处理数据，合并 Cell Count 小于 300000 的项
+        const treemapData = [];
+        const otherItems = [];
+
+        data.forEach(item => {
+            const color = organColorMap[item.organ]; // Get the color for the organ
+            if (item.cells >= 300000) {
+                treemapData.push({
+                    id: item.organ,
+                    name: item.organ,
+                    value: item.cells,
+                    colorValue: item.donors,
+                    color: color // Assign the color
+                });
+            } else {
+                otherItems.push({
+                    id: item.organ,
+                    name: item.organ,
+                    parent: 'Other',
+                    value: item.cells,
+                    colorValue: item.donors,
+                    color: color // Assign the color
+                });
+            }
+        });
+
+        // 如果有合并的 “Other” 项，添加到数据中
+        if (otherItems.length > 0) {
+            // 计算 “Other” 的总值
+            const otherTotalCells = otherItems.reduce((sum, item) => sum + item.value, 0);
+            const otherTotalDonors = otherItems.reduce((sum, item) => sum + item.colorValue, 0);
+
+            treemapData.push({
+                id: 'Other',
+                name: 'Other',
+                value: otherTotalCells,
+                colorValue: otherTotalDonors,
+                color: '#CCCCCC' // Assign a color for "Other"
+            });
+
+            // 添加子项到 treemapData
+            treemapData.push(...otherItems);
+        }
+
+        Highcharts.chart('treemap-chart', {
+            series: [{
+                type: 'treemap',
+                layoutAlgorithm: 'squarified',
+                allowDrillToNode: true,
+                animationLimit: 1000,
+                data: treemapData,
+                colorByPoint: true, // Enable color by point to use assigned colors
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.name}',
+                    style: {
+                        color: '#ffffff',
+                        textOutline: 'none',
+                        fontSize: '14px'
+                    }
+                },
+                levels: [{
+                    level: 1,
+                    borderWidth: 2,
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.name}',
+                        style: {
+                            fontSize: '16px',
+                            fontWeight: 'bold'
+                        }
+                    }
+                }]
+            }],
+            title: {
+                text: null
+            },
+            tooltip: {
+                headerFormat: '',
+                pointFormat: '<b>{point.name}</b><br/>Cell Count: {point.value}<br/>Donor Count: {point.colorValue}'
+            },
+            accessibility: {
+                point: {
+                    valueDescriptionFormat: '{point.name}, Cell Count: {point.value}, Donor Count: {point.colorValue}'
+                }
+            }
+        });
+    })();
+</script>
+
+</body>
+</html>
+
